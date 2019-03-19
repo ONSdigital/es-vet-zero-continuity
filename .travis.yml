@@ -1,0 +1,27 @@
+sudo: false
+language: java
+jdk:
+  - oraclejdk8
+env:
+  global:
+    - OWNER=ons
+    - ALGORITHM_NAME=ValidationZeroContinuity
+    - ALGORITHMIA_USER=travis
+    - ES_ALGORITHMIA_API_ADDRESS=https://api.algpoc.com
+    - ES_ALGORITHM_DESCRIPTOR=$OWNER/$ALGORITHM_NAME/$TRAVIS_COMMIT
+deploy:
+  - provider: script
+    skip_cleanup: true
+    script: bash scripts/deploy.sh -a $ALGORITHM_NAME -u $ALGORITHMIA_USER -p $ALGORITHMIA_PASSWORD
+    on:
+      branch: master
+      tags: false
+  - provider: script
+    skip_cleanup: true
+    script: bash scripts/publish.sh -a $ALGORITHM_NAME -k $ES_ALGORITHMIA_API_KEY -t $TRAVIS_TAG -g $TRAVIS_REPO_SLUG
+    on:
+      branch: master
+      tags: true
+after_deploy:
+  - echo "Testing deployed endpoint"
+  - mvn verify
