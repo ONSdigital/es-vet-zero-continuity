@@ -4,9 +4,12 @@ bin
 ivy
 dist
 logs
+target/
 
 *.class
 
 /project/target
 
 algorithm.zip
+
+.idea/
